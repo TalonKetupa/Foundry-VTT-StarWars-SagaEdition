@@ -1065,7 +1065,7 @@ export class SWSEActor extends Actor {
     }
 
     cleanSkillName(key) {
-        return this._uppercaseFirstLetters(key).replace("Knowledge ", "K").replace("(", "").replace(")", "").replace(" ", "").replace(" ", "")
+        return this._uppercaseFirstLetters(key).replace("(", "").replace(")", "").replace(" ", "").replace(" ", "")
     }
 
 

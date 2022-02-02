@@ -1146,12 +1146,15 @@ export class SWSEActorSheet extends ActorSheet {
 
             let content = `<p>${greetingString}</p>${optionString}`;
 
-            await Dialog.prompt({
+            let response = await Dialog.prompt({
                 title: greetingString,
                 content: content,
                 rejectClose: false,
                 callback: async (html) => {
                     let choice = html.find("#choice")[0];
+                    if (choice === undefined) {
+                        return false;
+                    }
                     let key = choice?.value;
 
                     if (!key) {
@@ -1172,6 +1175,10 @@ export class SWSEActorSheet extends ActorSheet {
                     }
                 }
             });
+
+            if(response === false){
+                return false;
+            }
         }
         return true;
     }
@@ -1455,11 +1462,11 @@ export class SWSEActorSheet extends ActorSheet {
                 }
             } else if (key === 'AVAILABLE_SKILL_FOCUS') {
                 for (let skill of this.actor.trainedSkills) {
-                    if (!this.actor.data.prerequisites.focusSkills.includes(skill.label.toLowerCase())) {
-                        resolvedOptions[skill.label.titleCase()] = {
+                    if (!this.actor.data.prerequisites.focusSkills.includes(skill.key.toLowerCase())) {
+                        resolvedOptions[skill.key.titleCase()] = {
                             abilities: [],
                             items: [],
-                            payload: skill.label.titleCase()
+                            payload: skill.key.titleCase()
                         };
                     }
                 }
