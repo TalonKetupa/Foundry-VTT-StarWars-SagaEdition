@@ -2,7 +2,6 @@ import {getLongKey, resolveValueArray, toNumber} from "../common/util.mjs";
 import {getInheritableAttribute} from "../attribute-helper.mjs";
 
 
-
 /**
  *
  * @param actor {SWSEActor}
@@ -10,15 +9,13 @@ import {getInheritableAttribute} from "../attribute-helper.mjs";
  * @param options.embeded
  */
 export function generateAttributes(actor, options={}) {
-    let system = actor.system;
-
-    system.lockAttributes = actor.shouldLockAttributes
+    actor.system.lockAttributes = actor.shouldLockAttributes
     let attributeGenType = actor.system.finalAttributeGenerationType;
     //let data = {};
 
     let embeddedItemOverride = options?.embeddedItemOverride;
 
-    for (let [key, attribute] of Object.entries(system.attributes)) {
+    for (let [key, attribute] of Object.entries(actor.system.attributes)) {
         let longKey = getLongKey(key);
         if(!longKey){
             continue;
@@ -59,7 +56,7 @@ export function generateAttributes(actor, options={}) {
                 reduce: "VALUES",
                 embeddedItemOverride
             })
-            let attributeBonus = system.levelAttributeBonus;
+            let attributeBonus = actor.system.levelAttributeBonus;
             for (let levelAttributeBonus of Object.values(attributeBonus ? attributeBonus : []).filter(b => b != null)) {
                 bonuses.push(levelAttributeBonus[key])
             }
@@ -103,7 +100,7 @@ export function generateAttributes(actor, options={}) {
             actor._pendingUpdates[`system.attributes.${key}.mod`] = attribute.mod;
         }
 
-        let conditionBonus = system.condition;
+        let conditionBonus = actor.system.condition;
 
         if("OUT" === conditionBonus || !conditionBonus){
             conditionBonus = "0";

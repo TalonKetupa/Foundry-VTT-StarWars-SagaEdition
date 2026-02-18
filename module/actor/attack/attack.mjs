@@ -1381,7 +1381,8 @@ export class Attack {
         }) || areaAttack
 
         if (critical && !ignoreCritical) {
-            damageRoll = modifyRollForCriticalHit(this, damageRoll);
+            const damageRoll1 = modifyRollForCriticalHit(this, damageRoll);
+            damageRoll = damageRoll1[0];
         }
         return damageRoll;
     }

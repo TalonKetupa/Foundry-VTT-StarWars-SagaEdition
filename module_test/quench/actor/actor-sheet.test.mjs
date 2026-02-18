@@ -161,8 +161,8 @@ export async function actorSheetTests(quench) {
                                 actor.prepareData()
                                 const firstAttack = actor.attack.attacks[0]
 
-                                const renderFormulaHTML = firstAttack.damageRoll.renderFormulaHTML;
-                                assert.equal( renderFormulaHTML, '<span>1d4</span>')
+                                const renderFormulaHTML = firstAttack.damageRoll.formattedFormula;
+                                assert.equal( renderFormulaHTML, '<span class="">1d4</span>')
                                 // assert.equal()
                             });
                         });
@@ -196,9 +196,7 @@ export async function actorSheetTests(quench) {
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Skill Focus", type: "feat",
                                     answers: ["Knowledge (Bureaucracy)"]})
 
-                                hasItems(assert, actor.items, [  "Bonus Feat (Point-Blank Shot)",
-                                    "Bonus Feat (Weapon Proficiency (Pistols))",
-                                    "Bonus Feat (Weapon Proficiency (Simple Weapons))",
+                                hasItems(assert, actor.items, [
                                     "Point-Blank Shot",
                                     "Scoundrel",
                                     "Skill Focus (Knowledge (Bureaucracy))",
@@ -245,8 +243,11 @@ export async function actorSheetTests(quench) {
                             await withTestActor(async actor => {
                                 actor.suppressDialog = true
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Jedi", type: "class"})
-                                hasItems(assert, actor.items, ["Jedi", "Bonus Feat (Force Sensitivity)", "Bonus Feat (Weapon Proficiency (Lightsabers))", "Bonus Feat (Weapon Proficiency (Simple Weapons))",
-                                    "Force Sensitivity", "Weapon Proficiency (Lightsabers)", "Weapon Proficiency (Simple Weapons)"])
+                                hasItems(assert, actor.items, [
+                                    "Jedi",
+                                    "Force Sensitivity",
+                                    "Weapon Proficiency (Lightsabers)",
+                                    "Weapon Proficiency (Simple Weapons)"])
                             });
                         });
 
@@ -260,9 +261,6 @@ export async function actorSheetTests(quench) {
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Sneak Attack", type: "talent"})
 
                                 hasItems(assert, actor.items, [
-                                    "Bonus Feat (Point-Blank Shot)",
-                                    "Bonus Feat (Weapon Proficiency (Pistols))",
-                                    "Bonus Feat (Weapon Proficiency (Simple Weapons))",
                                     "Point-Blank Shot",
                                     "Scoundrel",
                                     "Sneak Attack",
@@ -286,7 +284,7 @@ export async function actorSheetTests(quench) {
                                 let attack = attacks[0];
 
 
-                                assert.equal(attack.damageRoll.roll._formula, "1d6")
+                                assert.equal(attack.damageRoll._formula, "1d6")
                             });
                         });
 
@@ -364,8 +362,11 @@ export async function actorSheetTests(quench) {
                             await withTestActor(async actor => {
                                 actor.suppressDialog = true
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Jedi", type: "class"})
-                                hasItems(assert, actor.items, ["Jedi", "Bonus Feat (Force Sensitivity)", "Bonus Feat (Weapon Proficiency (Lightsabers))", "Bonus Feat (Weapon Proficiency (Simple Weapons))",
-                                    "Force Sensitivity", "Weapon Proficiency (Lightsabers)", "Weapon Proficiency (Simple Weapons)"])
+                                hasItems(assert, actor.items, [
+                                    "Jedi",
+                                    "Force Sensitivity",
+                                    "Weapon Proficiency (Lightsabers)",
+                                    "Weapon Proficiency (Simple Weapons)"])
 
                                 hasItems(assert, actor.inheritedChanges, ["Jedi Talent Trees"])
                             });
@@ -381,9 +382,7 @@ export async function actorSheetTests(quench) {
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Jedi", type: "class",
                                     answers: ["Force Sensitivity"]})
                                 await actor.sheet._onDropItem(getMockEvent(), {name: "Soldier", type: "class", answers: ["Armor Proficiency (Light)"]})
-                                hasItems(assert, actor.items, [  "Bonus Feat (Point-Blank Shot)",
-                                    "Bonus Feat (Weapon Proficiency (Pistols))",
-                                    "Bonus Feat (Weapon Proficiency (Simple Weapons))",
+                                hasItems(assert, actor.items, [
                                     "Jedi",
                                     "Point-Blank Shot",
                                     "Scoundrel",

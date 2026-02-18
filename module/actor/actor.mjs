@@ -964,7 +964,7 @@ export class SWSEActor extends Actor {
 
 
     initializeCharacterSettings() {
-        this.system.settings = this.system.settings || [];
+        this.system.settings = [];
         this.system.settings.push({type: "boolean", path: "system.isNPC", label: "Is NPC", value: this.system.isNPC})
         this.system.settings.push({type: "boolean", path: "system.autoSizeToken", label: "Autosize Token based on actor size?", value: this.system.autoSizeToken})
         this.system.settings.push({type: "boolean", path: "system.allowSheetLighting", label: "Allow Sheet to modify token lighting", value: this.system.allowSheetLighting})
@@ -1506,10 +1506,10 @@ export class SWSEActor extends Actor {
     }
 
     _attributes(options){
-        return this.getCached("attributes", () => {
+        //return this.getCached("attributes", () => {
             generateAttributes(this, options)
             return this.system.attributes;
-        })
+        //})
     }
 
 

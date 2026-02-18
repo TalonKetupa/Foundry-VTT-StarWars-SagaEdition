@@ -22,6 +22,7 @@ import {initializePolyglot} from "./module-support/polyglot.mjs";
 import {initializeCompendiumButtons} from "./compendium/compendium-web.mjs";
 import {buildRollContent} from "./common/chatMessageHelpers.mjs";
 import {SWSETokenDocument} from "./token/token-document.mjs";
+import {CharacterDataModel} from "./actor/data/characterdata.mjs";
 
 
 
@@ -75,6 +76,7 @@ Hooks.once('init', async function () {
     // Define custom Entity classes
     CONFIG.SWSE = SWSE;
     CONFIG.Actor.documentClass = SWSEActor;
+    CONFIG.Actor.dataModels.swse = CharacterDataModel;
     CONFIG.Item.documentClass = SWSEItem;
     CONFIG.Token.hudClass = SWSETokenHud;
     CONFIG.Token.documentClass = SWSETokenDocument;
@@ -266,7 +268,7 @@ Hooks.on('renderChatMessageHTML', async (message, html) => {
     }
 
     if(message.flags.swse.context.type === "attack-roll"){
-        html.find('[data-action="apply-attack"]').click(applyAttack.bind(this));
+        $(html).find('[data-action="apply-attack"]').click(applyAttack.bind(this));
     }
     if(message.flags.swse.context.type === "damage-result"){
         let activeGM = game.users.activeGM

@@ -1,5 +1,4 @@
 import {
-    filterItemsByType,
     inheritableItems,
     ALPHA_FINAL_NAME,
 } from "../../../common/util.mjs";
@@ -144,7 +143,7 @@ export class TraitsFunctions {
             system.heavyLoad = true;
         } else system.heavyLoad = false;
 
-        let activeTraits = filterItemsByType(inheritableItems(actor), "trait");
+        let activeTraits = inheritableItems(actor).filter(i => i.type === 'trait');
         system.traits = activeTraits.sort(ALPHA_FINAL_NAME);
 
         this.baseAttack = actor.baseAttackBonus;

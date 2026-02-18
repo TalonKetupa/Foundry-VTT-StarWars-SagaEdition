@@ -37,26 +37,26 @@ export class CharacterDataModel extends SystemDataModel.mixin(...characterFuncti
             details: new fields.SchemaField({
                 ...DetailFields.character,
             }),
-            settings: new fields.SchemaField({
-                isNPC: new fields.SchemaField({
-                    value: new fields.BooleanField({
-                        initial: false,
-                        label: "Is NPC",
-                    }),
-                }),
-                ignorePrerequisites: new fields.SchemaField({
-                    value: new fields.BooleanField({
-                        initial: false,
-                        label: "Ignore Prerequisites",
-                    }),
-                }),
-                abilityGeneration: new fields.SchemaField({
-                    value: new fields.StringField({
-                        initial: "Default",
-                        label: "Ability Generation Type",
-                    }),
-                }),
-            }),
+            // settings: new fields.SchemaField({
+            //     isNPC: new fields.SchemaField({
+            //         value: new fields.BooleanField({
+            //             initial: false,
+            //             label: "Is NPC",
+            //         }),
+            //     }),
+            //     ignorePrerequisites: new fields.SchemaField({
+            //         value: new fields.BooleanField({
+            //             initial: false,
+            //             label: "Ignore Prerequisites",
+            //         }),
+            //     }),
+            //     abilityGeneration: new fields.SchemaField({
+            //         value: new fields.StringField({
+            //             initial: "Default",
+            //             label: "Ability Generation Type",
+            //         }),
+            //     }),
+            // }),
             credits: new fields.NumberField({
                 initial: 0,
                 integer: true,
@@ -105,7 +105,7 @@ export class CharacterDataModel extends SystemDataModel.mixin(...characterFuncti
         this._prepareHealthDerivedData();
 
         //Settings
-        this.#initializeCharacterSettings();
+        //this.#initializeCharacterSettings();
     }
 
     #_validateLevelUpOptions() {

@@ -601,8 +601,6 @@ export async function makeAttack(data) {
     //     content = `<div class="warning">${hands} hands used out of a possible ${availableHands}</div><br>` + content;
     // }
 
-    let speaker = ChatMessage.getSpeaker({actor: attacks[0].actor});
-
     let flavor = attacks[0].name;
     if (attacks.length > 1) {
         flavor = "Full Attack " + flavor;
@@ -610,29 +608,41 @@ export async function makeAttack(data) {
     const pool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     let roll = Roll.fromTerms([pool]);
 
-    let flags = {};
-    flags.swse = {};
-    flags.swse.context = {};
-    flags.swse.context.type = "attack-roll";
-    flags.swse.context.attacks = resolvedAttackData;
+    let flags = {
+        swse: {
+            context: {
+                type: "attack-roll",
+                attacks: resolvedAttackData
+            }
+        }
+    };
     //flags.swse.context.targets = targetActors.map(actor => actor.id);
+
+    const chatLog = ui.chat;
 
     let messageData = {
         flags,
         user: game.user.id,
-        speaker: speaker,
+        speaker: ChatMessage.getSpeaker({actor: attacks[0].actor}),
         flavor: flavor,
         content,
         sound: getSound(attacks),
         roll,
-        rolls
+        rolls,
+        //type: chatLog?.mode ?? CONST.CHAT_MESSAGE_TYPES.IC
+    }
+
+    if (chatLog?.mode === CONST.CHAT_MESSAGE_TYPES.WHISPER) {
+        messageData.whisper = chatLog._getWhisperTargets();
     }
 
     let cls = getDocumentClass("ChatMessage");
     let msg = new cls(messageData);
 
-    const rollMode = data.rollMode;
-    if (rollMode) msg.applyRollMode(rollMode);
+    // const rollMode = data.rollMode;
+    // if (rollMode) msg.applyRollMode(rollMode);
+    // {rollMode: rollMode}
 
-    return cls.create(msg, {rollMode: rollMode});
+
+    return cls.create(msg);
 }
