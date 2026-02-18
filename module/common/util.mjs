@@ -54,7 +54,8 @@ export function resolveValueArray(values, actor, options) {
 }
 
 
-function resolveFunction(expression, deepestStart, deepestEnd, func, actor) {
+function resolveFunction(expression, func, actor) {
+    let {deepestStart, deepestEnd, functionStart} = getDeepestParens(expression)
     let preceeding = expression.substring(0, deepestStart).trim();
     if (preceeding === func.name) {
         let payload = expression.substring(deepestStart + 1, deepestEnd);
@@ -62,27 +63,21 @@ function resolveFunction(expression, deepestStart, deepestEnd, func, actor) {
         return func.function(toks);
     }
 }
+const functions = [
+    {name: "MAX", function: a => Math.max(...a)},
+    {name: "MIN", function: a => Math.min(...a)}
+];
 
 function resolveFunctions(expression, deepestStart, deepestEnd, actor) {
-    let functions = [{name: "MAX", function: a => Math.max(...a)},
-        {name: "MIN", function: a => Math.min(...a)}];
     let result;
     let fName;
     for (let func of functions) {
-        result = resolveFunction(expression, deepestStart, deepestEnd, func, actor);
+        result = resolveFunction(expression, func, actor);
         fName = func.name;
         if (!isNaN(result)) {
-            break;
+            return result;
         }
     }
-    if(!isNaN(result)){
-        const substring = expression.substring(0, deepestStart - fName.length);
-        const substring1 = expression.substring(deepestEnd + 1);
-        const newVar = substring + result + substring1;
-        return newVar;
-    }
-
-    //console.error("unresolved Function: ", expression, deepestStart, deepestEnd, actor)
 }
 
 function getDeepestParens(expression) {
@@ -109,7 +104,14 @@ function getDeepestParens(expression) {
             break;
         }
     }
-    return {deepestStart, deepestEnd};
+
+    let functionStart = deepestStart;
+    while(expression.charAt(functionStart - 1).match(/[a-zA-Z]/i)){
+        functionStart--;
+    }
+
+    return {deepestStart, deepestEnd, functionStart};
+
 }
 
 /**
@@ -118,22 +120,17 @@ function getDeepestParens(expression) {
  * @param actor {SWSEActor}
  */
 function resolveParensAndFunctions(expression, actor) {
-    let {deepestStart, deepestEnd} = getDeepestParens(expression);
+    let {deepestStart, deepestEnd, functionStart} = getDeepestParens(expression);
     if (deepestStart > deepestEnd) {
         return;
     }
-    let result = resolveFunctions(expression, deepestStart, deepestEnd, actor);
-    if (!!result) {
-        return resolveExpression(result, actor);
-    }
-    let payload = expression.substring(deepestStart + 1, deepestEnd);
 
-    const subExpression = expression.substring(0, deepestStart) + payload.split(", ").map(t => resolveExpression(t.trim(), actor)).join(", ") + expression.substring(deepestEnd + 1);
-    //subExpression.split(", ").map(t => resolveExpression(t, actor))
-    //resolveExpression(expression.substring(deepestStart + 1, deepestEnd), actor)
-    //payload.split(", ").map(t => resolveExpression(t.trim(), actor)).join(", ")
-    return resolveExpression(subExpression, actor);
+    let resolvedSubExpression = functionStart === deepestStart ? resolveExpression(expression.substring(deepestStart + 1, deepestEnd), actor)
+        : resolveFunctions(expression.substring(functionStart, deepestEnd+1), deepestStart, deepestEnd, actor)
 
+    let result = expression.substring(0, functionStart) + resolvedSubExpression + expression.substring(deepestEnd + 1);
+
+    return resolveExpression(result, actor);
 }
 
 function resolveComparativeExpression(expression, actor) {

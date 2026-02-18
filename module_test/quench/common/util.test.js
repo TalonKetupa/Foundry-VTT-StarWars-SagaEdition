@@ -91,29 +91,34 @@ export async function utilTests(quench) {
                 })
 
                 describe("resolveExpression", ()=>{
-                    it("should handle no parameters", async ()=>{
-
-
-                        //console.log(resolveExpression("MAX(@WISMOD,@CHAMOD)", null, null))
+                    it("should handle basic math", async ()=>{
                         assert.equal(resolveExpression("+2", null),2)
                         assert.equal(resolveExpression("-5", null),-5)
                         assert.equal(resolveExpression("-5-5", null),-10)
-                        assert.equal(resolveExpression("3d6+3", null), "3d6 + 3")
                         assert.equal(resolveExpression("-5--5", null), 0)
-                        assert.equal(resolveExpression("MAX(1,5)", null), 5)
-                        assert.equal(resolveExpression("MIN(1,5)", null), 1)
-                        assert.equal(resolveExpression("MAX(1,5)+4", null), 9)
-                        assert.equal(resolveExpression("MAX(1,5)+MAX(1,5)", null), 10)
-                        assert.equal(resolveExpression("MAX(1,MAX(2,5))+3", null), 8)
                         assert.equal(1, resolveExpression("1+2-3+5-4", null))
                         assert.equal(-9, resolveExpression("1+2-(3+5)-4", null))
                         assert.equal(27, resolveExpression("3*9", null))
                         assert.equal(39, resolveExpression("3+4*9", null))
                         assert.equal(-24, resolveExpression("-3*8", null))
                         assert.equal(-24, resolveExpression("3*-8", null))
-
                     })
+                })
 
+                describe("resolveExpression", ()=>{
+                    it("should handle MIN and MAX functions", async ()=>{
+                        assert.equal(resolveExpression("MAX(1,5)", null), 5)
+                        assert.equal(resolveExpression("MIN(1,5)", null), 1)
+                        assert.equal(resolveExpression("MAX(1,5)+4", null), 9)
+                        assert.equal(resolveExpression("MAX(1,5)+MAX(1,5)", null), 10)
+                        assert.equal(resolveExpression("MAX(1,MAX(2,5))+3", null), 8)
+                    })
+                })
+
+                describe("resolveExpression", ()=>{
+                    it("should keep dice expressions separate", async ()=>{
+                        assert.equal(resolveExpression("3d6+3", null), "3d6 + 3")
+                    })
                 })
 
                 describe("innerJoin", ()=>{
